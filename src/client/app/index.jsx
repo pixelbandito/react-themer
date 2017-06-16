@@ -1,9 +1,11 @@
 import React from 'react';
 import {render} from 'react-dom';
+
 import AwesomeComponent from './AwesomeComponent.jsx';
 import SassJsComponent from './SassJsComponent.jsx';
+// import bootstrap from 'bootstrap.css';
 
-require('bootstrap/dist/css/bootstrap.css');
+require('../submodules/bootstrap/dist/css/bootstrap.css');
 require('./main.scss');
 require('sass.js');
 
