@@ -1,7 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
 
-import AwesomeComponent from './AwesomeComponent.jsx';
 import SassJsComponent from './SassJsComponent.jsx';
 // import bootstrap from 'bootstrap.css';
 
@@ -12,9 +11,8 @@ require('sass.js');
 class App extends React.Component {
     render () {
         return (
-            <div>
+            <div className="container pxb-u-m_t--lg pxb-u-m_b--lg">
                 <h1>Hello World!</h1>
-                <AwesomeComponent/>
                 <SassJsComponent/>
             </div>
         );

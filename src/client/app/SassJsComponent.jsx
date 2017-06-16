@@ -60,20 +60,23 @@ class SassJsComponent extends React.Component {
 		return (
 			<div>
 				<style>{this.state.themeCss}</style>
-				<div>
-					<form
-						className="form"
-					>
+				<form className="form">
+					<div className="form-group">
+						<label>Primary brand color</label>
 						<input
 							className="form-control"
 							defaultValue={colors.primary}
 							onChange={this.changedColorPrimary}
 						/>
-						<span>{colors.primary}</span>
-					</form>
-					<button className="btn btn-default">Button key color: {colors.primary}</button>
-					<button className="btn btn-danger" onClick={this.randomizeColor}>Randomize color</button>
-				</div>
+					</div>
+				</form>
+				<button
+					className="btn btn-primary"
+					onClick={this.randomizeColor}
+					type="button"
+				>
+					Randomize color
+				</button>
 			</div>
 		)
 	}

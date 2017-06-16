@@ -1,4 +1,59 @@
-* {
-    color: red;
-    background-color: pink;
+$pxb-len-1: 5px;
+$pxb-len-2: 10px;
+$pxb-len-3: 15px;
+$pxb-len-4: 20px;
+$pxb-len-5: 40px;
+
+$pxb-len-sm: $pxb-len-2;
+$pxb-len-md: $pxb-len-4;
+$pxb-len-lg: $pxb-len-5;
+
+.pxb-u-m--sm {
+    margin: $pxb-len-sm;
+}
+.pxb-u-m_t--sm {
+    margin-top: $pxb-len-sm;
+}
+.pxb-u-m_r--sm {
+    margin-right: $pxb-len-sm;
+}
+.pxb-u-m_b--sm {
+    margin-bottom: $pxb-len-sm;
+}
+.pxb-u-m_l--sm {
+    margin-left: $pxb-len-sm;
+}
+.pxb-u-m--md {
+    margin: $pxb-len-md;
+}
+.pxb-u-m_t--md {
+    margin-top: $pxb-len-md;
+}
+.pxb-u-m_r--md {
+    margin-right: $pxb-len-md;
+}
+.pxb-u-m_b--md {
+    margin-bottom: $pxb-len-md;
+}
+.pxb-u-m_l--md {
+    margin-left: $pxb-len-md;
+}
+.pxb-u-m--lg {
+    margin: $pxb-len-lg;
+}
+.pxb-u-m_t--lg {
+    margin-top: $pxb-len-lg;
+}
+.pxb-u-m_r--lg {
+    margin-right: $pxb-len-lg;
+}
+.pxb-u-m_b--lg {
+    margin-bottom: $pxb-len-lg;
+}
+.pxb-u-m_l--lg {
+    margin-left: $pxb-len-lg;
+}
+
+.pxb-u-p--md {
+    padding: $pxb-len-md;
 }
