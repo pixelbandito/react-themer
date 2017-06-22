@@ -57,3 +57,19 @@ $pxb-len-lg: $pxb-len-5;
 .pxb-u-p--md {
     padding: $pxb-len-md;
 }
+
+
+.form-control[type="color"] {
+    padding: 0;
+    height: 2.25rem;
+    box-sizing: content-box;
+    width: 2.25rem;
+    border: 0;
+    &::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+    &::-webkit-color-swatch {
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 0.25rem;
+    }
+}

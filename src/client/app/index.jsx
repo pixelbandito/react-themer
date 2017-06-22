@@ -11,7 +11,7 @@ require('sass.js');
 class App extends React.Component {
     render () {
         return (
-            <div className="container pxb-u-m_t--lg pxb-u-m_b--lg">
+            <div className="container pxb-u-m_t--md pxb-u-m_b--md">
                 <h1>Hello World!</h1>
                 <SassJsComponent/>
             </div>
