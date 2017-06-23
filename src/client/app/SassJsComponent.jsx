@@ -42,17 +42,17 @@ class SassJsComponent extends React.Component {
 			scssChunk2Keys = scssFiles.slice(varsIndex, lastMixinIndex + 1),
 			scssChunk3Keys = ['buttons'],
 			scss = '';
-		const {colors, roundness} = this.state.theme;
+		const {colors, roundness, shininess} = this.state.theme;
 
 		component.setState({color: colors.primary});
 		console.log(`"Randomizer" got ${colors.primary}`);
 		scss = `${bootstrapThemeScss.getText(scssChunk1Keys)}\n` +
-			`$theme-brand-primary: ${colors.primary}; $theme-brand-good: ${colors.good}; $theme-brand-bad: ${colors.bad}; $theme-border-radius: ${roundness / 100 * 80}rem;\n` +
+			`$theme-brand-primary: ${colors.primary}; $theme-brand-good: ${colors.good}; $theme-brand-bad: ${colors.bad}; $theme-roundness: ${roundness}; $theme-shininess: ${shininess};\n` +
 			`${bootstrapThemeScss.getText(scssChunk2Keys)}\n` +
 			`${bootstrapThemeScss.getText(scssChunk3Keys)}`;
 		sass.compile(scss, function(result) {
 			component.setState({themeCss: result.text});
-			console.log(`compiled with $theme-brand-primary: ${colors.primary} and $theme-border-radius: ${roundness / 100 * 80}rem`)
+			console.log(`compiled with $theme-brand-primary: ${colors.primary} and $theme-border-radius: ${roundness / 100 * 80}rem; and $theme-shininess: ${shininess};`)
 		});
 	}
 
