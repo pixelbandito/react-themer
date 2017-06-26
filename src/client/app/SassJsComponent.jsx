@@ -3,6 +3,8 @@ import React from 'react';
 let sass = require('sass.js/dist/sass.sync.js');
 let bootstrapThemeScss = require('./bootstrapThemeScss.js').default();
 
+let googleFonts = require('./googleFonts/googleFonts.jsx').default;
+
 // Sass.setWorkerUrl('../../../node_modules/sass.js/dist/sass.worker.js');
 // let sass = new Sass();
 
@@ -13,7 +15,9 @@ class SassJsComponent extends React.Component {
 		this.state = {
 			color: 'white',
 			themeCss: '',
+			fontLoader: '',
 			theme: {
+				font: '',
 				colors: {
 					primary: '#0275d8',
 					good: '#00ff00',
@@ -23,32 +27,44 @@ class SassJsComponent extends React.Component {
 				shininess: 0,
 				thickness: 0,
 				depth: 0,
-			}
+			},
+			currentFont: null,
+			fontChoices: []
 		};
 		this.updateTheme = this.updateTheme.bind(this);
+		this.changedFont = this.changedFont.bind(this);
 		this.changedColorPrimary = this.changedColorPrimary.bind(this);
 		this.changedRoundness = this.changedRoundness.bind(this);
 		this.changedShininess = this.changedShininess.bind(this);
 		this.changedThickness = this.changedThickness.bind(this);
 		this.changedDepth = this.changedDepth.bind(this);
+
+		let component = this;
+		googleFonts.getGoogleFonts().then(function(response) {
+			console.log(response);
+			component.setState({fontChoices: response});
+		});
 	}
 
 	updateTheme() {
-		let newColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16),
-			component = this,
+		let component = this,
 			scssFiles = bootstrapThemeScss.keys,
-			varsIndex = scssFiles.indexOf('variables'),
-			buttonIndex = scssFiles.indexOf('buttons'),
-			lastMixinIndex = scssFiles.indexOf('mixins_float'),
-			scssChunk1Keys = scssFiles.slice(0, varsIndex),
-			scssChunk2Keys = scssFiles.slice(varsIndex, lastMixinIndex + 1),
+			scssChunk1Keys = scssFiles.slice(0, scssFiles.indexOf('variables')),
+			scssChunk2Keys = scssFiles.slice(scssFiles.indexOf('variables'), scssFiles.indexOf('type') + 1),
 			scssChunk3Keys = ['buttons'],
-			scss = '';
+			scss = '',
+			font = this.state.currentFont;
 		const {colors, roundness, shininess, thickness, depth} = this.state.theme;
 
 		console.log(this.state.theme);
 
-		const customThemeVars = `$theme-brand-primary: ${colors.primary}; $theme-brand-good: ${colors.good}; $theme-brand-bad: ${colors.bad}; $theme-roundness: ${roundness}; $theme-shininess: ${shininess}; $theme-thickness: ${thickness}; $theme-depth: ${depth};\n`;
+		let customThemeVars = `$theme-brand-primary: ${colors.primary}; $theme-brand-good: ${colors.good}; $theme-brand-bad: ${colors.bad}; $theme-roundness: ${roundness}; $theme-shininess: ${shininess}; $theme-thickness: ${thickness}; $theme-depth: ${depth};\n`;
+
+		if (font) {
+			const fontUrl = googleFonts.getApiUrl(font);
+			customThemeVars += `$theme-font-family: "${font.family}";\n`;
+			this.setState({fontLoader: `@import url("${fontUrl}");`})
+		}
 
 		scss = `${bootstrapThemeScss.getText(scssChunk1Keys)}\n` +
 			customThemeVars +
@@ -62,6 +78,18 @@ class SassJsComponent extends React.Component {
 				console.log(result);
 			}
 		});
+	}
+
+	changedFont(event) {
+		if (event.target.value > 0) {
+			const font = this.state.fontChoices[event.target.value - 1],
+				fontName = font.family;
+			console.log(fontName);
+			let theme = this.state.theme;
+			theme.font = fontName;
+			this.setState({currentFont: font});
+			this.setState({theme: theme});
+		}
 	}
 
 	changedColorPrimary(event) {
@@ -100,12 +128,35 @@ class SassJsComponent extends React.Component {
 
 	render() {
 		const {colors, roundness, shininess, thickness, depth} = this.state.theme;
-		let {themeCss} = this.state;
+		let {themeCss, fontChoices, fontLoader} = this.state;
 
 		return (
 			<div>
+				<style>{fontLoader}</style>
 				<style>{themeCss}</style>
 				<form className="form">
+					<div className="form-group">
+						<label>Primary brand color</label>
+						<select
+							className="form-control"
+							defaultValue={0}
+							onChange={this.changedFont}
+						>
+							<option
+								value={0}>
+								Choose a font
+							</option>
+							{fontChoices.map(function(object, i) {
+								return (
+									<option
+										value={i + 1}
+										key={object.family}>
+										{object.family}
+									</option>
+								);
+							})}
+						</select>
+					</div>
 					<div className="form-group">
 						<label>Primary brand color</label>
 						<input
