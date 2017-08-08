@@ -11,7 +11,7 @@ const config = {
     path: BUILD_DIR,
     filename: 'bundle.js',
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [new HtmlWebpackPlugin({ template: 'src/client/index.html' })],
   module: {
     loaders: [
       {
@@ -23,6 +23,10 @@ const config = {
         test: /\.jsx?$/,
         include: APP_DIR,
         loader: 'babel-loader',
+      },
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
       },
       {
         test: /\.css$/,

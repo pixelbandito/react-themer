@@ -1,4 +1,5 @@
 import React from 'react';
+import { render } from 'react-dom';
 
 import SassJsComponent from './SassJsComponent';
 // import bootstrap from 'bootstrap.css';
@@ -14,5 +15,7 @@ const App = () => (
     <SassJsComponent />
   </div>
 );
+
+render(<App />, document.getElementById('app'));
 
 export default App;
