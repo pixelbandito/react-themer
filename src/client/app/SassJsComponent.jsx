@@ -61,6 +61,9 @@ class SassJsComponent extends React.Component {
       const fontUrl = googleFonts.getApiUrl(font);
       customThemeVars += `$theme-font-family: "${font.family}";\n`;
       this.setState({ fontLoader: `@import url("${fontUrl}");` });
+    } else {
+      customThemeVars += '$theme-font-family: inherit;\n';
+      this.setState({ fontLoader: '' });
     }
 
     scss = `${bootstrapThemeScss.getText(scssChunk1Keys)}\n${
