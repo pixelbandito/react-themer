@@ -40,7 +40,7 @@
     "dev": "concurrently --kill-others \"npm run build--dev--watch\" \"npm run serve--dev\"",
     "build--dev": "webpack -d",
     "build--dev--watch": "webpack -d --watch",
-    "serve--dev": "http-server dist -p 8880",
+    "serve--dev": "http-server docs -p 8880",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pixelbandito@gmail.com",

@@ -1,12 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const BUILD_DIR = path.resolve(__dirname, 'dist/');
 const APP_DIR = path.resolve(__dirname, 'src/client/app');
 const BS_DIR = path.resolve(__dirname, 'src/client/submodules/bootstrap');
+const BUILD_DIR = path.resolve(__dirname, 'docs/');
 
 const config = {
-  entry: `${APP_DIR}/index.jsx`,
+  entry: {
+    [`${BUILD_DIR}/bundle`]: `${APP_DIR}/index.jsx`,
+  },
   output: {
     path: BUILD_DIR,
     filename: 'bundle.js',
