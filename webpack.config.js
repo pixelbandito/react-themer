@@ -13,6 +13,12 @@ const config = {
     path: BUILD_DIR,
     filename: 'bundle.js',
   },
+  devServer: {
+    contentBase: path.join(__dirname, 'docs'),
+    compress: true,
+    port: 9000,
+  },
+  devtool: 'env',
   plugins: [new HtmlWebpackPlugin({ template: 'src/client/index.html' })],
   module: {
     loaders: [
@@ -20,11 +26,19 @@ const config = {
         test: /\.js$/,
         include: APP_DIR,
         loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react', 'react-hmre'],
+          plugins: ['babel-plugin-transform-object-rest-spread'],
+        },
       },
       {
         test: /\.jsx?$/,
         include: APP_DIR,
         loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react', 'react-hmre'],
+          plugins: ['babel-plugin-transform-object-rest-spread'],
+        },
       },
       {
         test: /\.html$/,
