@@ -1,12 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { setMainFont, setPrimaryColor, setRoundness, setShininess, setThickness, setDepth, setCurrentTheme, getCurrentTheme, getThemeForm } from './themeConfig';
 
 const sass = require('sass.js/dist/sass.sync.js');
 const bootstrapThemeScss = require('./bootstrapThemeScss.js').default();
 
 const googleFonts = require('./googleFonts/googleFonts.jsx').default;
-
-// Sass.setWorkerUrl('../../../node_modules/sass.js/dist/sass.worker.js');
-// let sass = new Sass();
 
 class SassJsComponent extends React.Component {
   constructor(props) {
@@ -28,17 +28,16 @@ class SassJsComponent extends React.Component {
         thickness: 0,
         depth: 0,
       },
-      currentFont: null,
       fontChoices: [],
     };
 
     this.updateTheme = this.updateTheme.bind(this);
-    this.changedFont = this.changedFont.bind(this);
-    this.changedColorPrimary = this.changedColorPrimary.bind(this);
-    this.changedRoundness = this.changedRoundness.bind(this);
-    this.changedShininess = this.changedShininess.bind(this);
-    this.changedThickness = this.changedThickness.bind(this);
-    this.changedDepth = this.changedDepth.bind(this);
+    this.fontInputChangeHandler = this.fontInputChangeHandler.bind(this);
+    this.primaryColorInputChangeHandler = this.primaryColorInputChangeHandler.bind(this);
+    this.roundnessInputChangeHandler = this.roundnessInputChangeHandler.bind(this);
+    this.shininessInputChangedHandler = this.shininessInputChangedHandler.bind(this);
+    this.thicknessInputChangedHandler = this.thicknessInputChangedHandler.bind(this);
+    this.depthInputChangedHandler = this.depthInputChangedHandler.bind(this);
     const component = this;
 
     googleFonts.getGoogleFonts().then((response) => {
@@ -52,8 +51,7 @@ class SassJsComponent extends React.Component {
     const scssChunk1Keys = scssFiles.slice(0, scssFiles.indexOf('variables'));
     const scssChunk2Keys = scssFiles.slice(scssFiles.indexOf('variables'), scssFiles.indexOf('type') + 1);
     const scssChunk3Keys = ['buttons'];
-    const font = this.state.currentFont;
-    const { colors, roundness, shininess, thickness, depth } = this.state.theme;
+    const { colors, depth, font, roundness, shininess, thickness } = this.state.theme;
     let scss = '';
     let customThemeVars = `$theme-brand-primary: ${colors.primary}; $theme-brand-good: ${colors.good}; $theme-brand-bad: ${colors.bad}; $theme-roundness: ${roundness}; $theme-shininess: ${shininess}; $theme-thickness: ${thickness}; $theme-depth: ${depth};\n`;
 
@@ -77,45 +75,37 @@ class SassJsComponent extends React.Component {
     });
   }
 
-  changedFont(event) {
+  fontInputChangeHandler(event) {
     if (event.target.value > 0) {
       const font = this.state.fontChoices[event.target.value - 1];
       const fontName = font.family;
-      const theme = this.state.theme;
-      theme.font = fontName;
-      this.setState({ currentFont: font });
-      this.setState({ theme });
+      this.props.setMainFont(fontName);
     }
   }
 
-  changedColorPrimary(event) {
-    const theme = this.state.theme;
-    theme.colors.primary = event.target.value;
-    this.setState({ theme });
+  primaryColorInputChangeHandler(event) {
+    const color = event.target.value;
+    this.props.setPrimaryColor(color);
   }
 
-  changedRoundness(event) {
-    const theme = this.state.theme;
-    theme.roundness = event.target.value;
-    this.setState({ theme });
+  roundnessInputChangeHandler(event) {
+    const roundness = event.target.value;
+    this.props.setRoundness(roundness);
   }
 
-  changedShininess(event) {
-    const theme = this.state.theme;
-    theme.shininess = event.target.value;
-    this.setState({ theme });
+  shininessInputChangedHandler(event) {
+    const shininess = event.target.value;
+    this.props.setShininess(shininess);
   }
 
-  changedThickness(event) {
-    const theme = this.state.theme;
-    theme.thickness = parseInt(event.target.value, 10);
-    this.setState({ theme });
+  thicknessInputChangedHandler(event) {
+    const thickness = event.target.value;
+    this.props.setThickness(thickness);
   }
 
-  changedDepth(event) {
-    const theme = this.state.theme;
-    theme.depth = parseInt(event.target.value, 10);
-    this.setState({ theme });
+  depthInputChangedHandler(event) {
+    const depth = event.target.value;
+    this.props.setDepth(depth);
   }
 
   render() {
@@ -133,7 +123,7 @@ class SassJsComponent extends React.Component {
               id="fontChanger"
               className="form-control"
               defaultValue={0}
-              onChange={this.changedFont}
+              onChange={this.fontInputChangeHandler}
             >
               <option value={0} >
                 Choose a font
@@ -155,7 +145,7 @@ class SassJsComponent extends React.Component {
               type="color"
               className="form-control"
               defaultValue={colors.primary}
-              onChange={this.changedColorPrimary}
+              onChange={this.primaryColorInputChangeHandler}
             />
           </div>
           <div className="form-group">
@@ -168,7 +158,7 @@ class SassJsComponent extends React.Component {
               min="0"
               max="2.5"
               step="0.0625"
-              onChange={this.changedRoundness}
+              onChange={this.roundnessInputChangeHandler}
             />
           </div>
           <div className="form-group">
@@ -181,7 +171,7 @@ class SassJsComponent extends React.Component {
               min="0"
               max="100"
               step="1"
-              onChange={this.changedShininess}
+              onChange={this.shininessInputChangedHandler}
             />
           </div>
           <div className="form-group">
@@ -194,7 +184,7 @@ class SassJsComponent extends React.Component {
               min="0"
               max="5"
               step="1"
-              onChange={this.changedThickness}
+              onChange={this.thicknessInputChangedHandler}
             />
           </div>
           <div className="form-group">
@@ -207,7 +197,7 @@ class SassJsComponent extends React.Component {
               min="0"
               max="10"
               step="1"
-              onChange={this.changedDepth}
+              onChange={this.depthInputChangedHandler}
             />
           </div>
         </form>
@@ -224,4 +214,20 @@ class SassJsComponent extends React.Component {
   }
 }
 
-export default SassJsComponent;
+const mapStateToProps = state => ({
+  currentTheme: getCurrentTheme(state.currentThemeReducer),
+});
+
+const mapDispatchToProps = dispatch => ({
+  setMainFont: font => dispatch(setMainFont(font)),
+  setPrimaryColor: color => dispatch(setPrimaryColor(color)),
+  setRoundness: roundness => dispatch(setRoundness(roundness)),
+  setShininess: shininess => dispatch(setShininess(shininess)),
+  setThickness: thickness => dispatch(setThickness(thickness)),
+  setDepth: depth => dispatch(setDepth(depth)),
+  setCurrentTheme: theme => dispatch(setCurrentTheme(theme)),
+  getCurrentTheme: () => dispatch(getCurrentTheme()),
+  getThemeForm: () => dispatch(getThemeForm()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SassJsComponent);
