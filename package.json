@@ -5,12 +5,14 @@
   "main": "webpack.config.js",
   "dependencies": {
     "axios": "^0.16.2",
+    "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-font-picker": "^1.1.8",
     "react-redux": "^5.0.5",
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "sass.js": "^0.10.6"
   },
   "devDependencies": {
@@ -43,7 +45,7 @@
     "dev": "concurrently --kill-others \"npm run build--dev--watch\" \"npm run serve--dev\"",
     "build--dev": "webpack -d",
     "build--dev--watch": "webpack -d --watch",
-    "serve--dev": "webpack-dev-server --progress --inline --hot",
+    "serve--dev": "webpack-dev-server --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pixelbandito@gmail.com",

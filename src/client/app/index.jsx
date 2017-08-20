@@ -4,8 +4,8 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-
-import { currentTheme, themeForm, setCurrentTheme } from './themeConfig';
+import { currentTheme, currentThemeCss, themeForm } from './themes/reducers';
+import { googleFontsReducer } from './googleFonts/reducers';
 import SassJsComponent from './SassJsComponent';
 // import bootstrap from 'bootstrap.css';
 
@@ -18,7 +18,9 @@ const middleware = [thunk];
 const store = createStore(
   combineReducers({
     currentTheme,
+    currentThemeCss,
     themeForm,
+    googleFontsReducer,
   }),
   /* eslint-disable no-underscore-dangle */
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),

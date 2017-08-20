@@ -32,7 +32,7 @@ const googleFonts = {
   getApiUrl(font) {
     const apiUrl = [];
     apiUrl.push('//fonts.googleapis.com/css?family=');
-    apiUrl.push(font.family.replace(/ /g, '+'));
+    apiUrl.push(font.replace(/ /g, '+'));
     apiUrl.push(':400,400i,700,700i');
     return apiUrl.join('');
   },

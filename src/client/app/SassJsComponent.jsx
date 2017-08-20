@@ -1,35 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import { setMainFont, setPrimaryColor, setRoundness, setShininess, setThickness, setDepth, setCurrentTheme, getCurrentTheme, getThemeForm } from './themeConfig';
-
-const sass = require('sass.js/dist/sass.sync.js');
-const bootstrapThemeScss = require('./bootstrapThemeScss.js').default();
-
-const googleFonts = require('./googleFonts/googleFonts.jsx').default;
+import { setMainFont, setPrimaryColor, setRoundness, setShininess, setThickness, setDepth, setCurrentTheme, themeConfigPropTypes } from './themes/reducers';
+import { getCurrentTheme, getCurrentThemeCss, getCurrentFontLoader, getThemeForm } from './themes/selectors';
+import { loadGoogleFonts } from './googleFonts/reducers';
+import getFontChoices from './googleFonts/selectors';
 
 class SassJsComponent extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      color: 'white',
-      themeCss: '',
-      fontLoader: '',
-      theme: {
-        font: '',
-        colors: {
-          primary: '#0275d8',
-          good: '#00ff00',
-          bad: '#ff0000',
-        },
-        roundness: 0.25,
-        shininess: 0,
-        thickness: 0,
-        depth: 0,
-      },
-      fontChoices: [],
-    };
 
     this.updateTheme = this.updateTheme.bind(this);
     this.fontInputChangeHandler = this.fontInputChangeHandler.bind(this);
@@ -38,46 +18,19 @@ class SassJsComponent extends React.Component {
     this.shininessInputChangedHandler = this.shininessInputChangedHandler.bind(this);
     this.thicknessInputChangedHandler = this.thicknessInputChangedHandler.bind(this);
     this.depthInputChangedHandler = this.depthInputChangedHandler.bind(this);
-    const component = this;
+  }
 
-    googleFonts.getGoogleFonts().then((response) => {
-      component.setState({ fontChoices: response });
-    });
+  componentWillMount() {
+    this.props.loadGoogleFonts();
   }
 
   updateTheme() {
-    const component = this;
-    const scssFiles = bootstrapThemeScss.keys;
-    const scssChunk1Keys = scssFiles.slice(0, scssFiles.indexOf('variables'));
-    const scssChunk2Keys = scssFiles.slice(scssFiles.indexOf('variables'), scssFiles.indexOf('type') + 1);
-    const scssChunk3Keys = ['buttons'];
-    const { colors, depth, font, roundness, shininess, thickness } = this.state.theme;
-    let scss = '';
-    let customThemeVars = `$theme-brand-primary: ${colors.primary}; $theme-brand-good: ${colors.good}; $theme-brand-bad: ${colors.bad}; $theme-roundness: ${roundness}; $theme-shininess: ${shininess}; $theme-thickness: ${thickness}; $theme-depth: ${depth};\n`;
-
-    if (font) {
-      const fontUrl = googleFonts.getApiUrl(font);
-      customThemeVars += `$theme-font-family: "${font.family}";\n`;
-      this.setState({ fontLoader: `@import url("${fontUrl}");` });
-    } else {
-      customThemeVars += '$theme-font-family: inherit;\n';
-      this.setState({ fontLoader: '' });
-    }
-
-    scss = `${bootstrapThemeScss.getText(scssChunk1Keys)}\n${
-      customThemeVars
-    }${bootstrapThemeScss.getText(scssChunk2Keys)}\n${bootstrapThemeScss.getText(scssChunk3Keys)}`;
-
-    sass.compile(scss, (result) => {
-      if (result.text) {
-        component.setState({ themeCss: result.text });
-      }
-    });
+    this.props.setCurrentTheme(this.props.themeForm);
   }
 
   fontInputChangeHandler(event) {
     if (event.target.value > 0) {
-      const font = this.state.fontChoices[event.target.value - 1];
+      const font = this.props.fontChoices[event.target.value - 1];
       const fontName = font.family;
       this.props.setMainFont(fontName);
     }
@@ -109,13 +62,13 @@ class SassJsComponent extends React.Component {
   }
 
   render() {
-    const { colors, roundness, shininess, thickness, depth } = this.state.theme;
-    const { themeCss, fontChoices, fontLoader } = this.state;
+    const { currentThemeCss, currentFontLoader, fontChoices, themeForm } = this.props;
+    const { colorPrimary, roundness, shininess, thickness, depth } = themeForm;
 
     return (
       <div>
-        <style>{fontLoader}</style>
-        <style>{themeCss}</style>
+        <style>{currentFontLoader}</style>
+        <style>{currentThemeCss}</style>
         <form className="form">
           <div className="form-group">
             <label htmlFor="fontChanger">Main text font</label>
@@ -144,7 +97,7 @@ class SassJsComponent extends React.Component {
               id="primaryColorChanger"
               type="color"
               className="form-control"
-              defaultValue={colors.primary}
+              defaultValue={colorPrimary}
               onChange={this.primaryColorInputChangeHandler}
             />
           </div>
@@ -214,20 +167,40 @@ class SassJsComponent extends React.Component {
   }
 }
 
+SassJsComponent.propTypes = {
+  currentThemeCss: PropTypes.string.isRequired,
+  currentFontLoader: PropTypes.string.isRequired,
+  fontChoices: PropTypes.arrayOf(PropTypes.shape({
+    family: PropTypes.string.isRequired,
+  })).isRequired,
+  loadGoogleFonts: PropTypes.func.isRequired,
+  setCurrentTheme: PropTypes.func.isRequired,
+  setMainFont: PropTypes.func.isRequired,
+  setPrimaryColor: PropTypes.func.isRequired,
+  setRoundness: PropTypes.func.isRequired,
+  setShininess: PropTypes.func.isRequired,
+  setThickness: PropTypes.func.isRequired,
+  setDepth: PropTypes.func.isRequired,
+  themeForm: PropTypes.shape(themeConfigPropTypes).isRequired,
+};
+
 const mapStateToProps = state => ({
-  currentTheme: getCurrentTheme(state.currentThemeReducer),
+  currentTheme: getCurrentTheme(state),
+  currentThemeCss: getCurrentThemeCss(state),
+  currentFontLoader: getCurrentFontLoader(state),
+  fontChoices: getFontChoices(state),
+  themeForm: getThemeForm(state),
 });
 
 const mapDispatchToProps = dispatch => ({
+  loadGoogleFonts: () => dispatch(loadGoogleFonts()),
+  setCurrentTheme: theme => dispatch(setCurrentTheme(theme)),
   setMainFont: font => dispatch(setMainFont(font)),
   setPrimaryColor: color => dispatch(setPrimaryColor(color)),
   setRoundness: roundness => dispatch(setRoundness(roundness)),
   setShininess: shininess => dispatch(setShininess(shininess)),
   setThickness: thickness => dispatch(setThickness(thickness)),
   setDepth: depth => dispatch(setDepth(depth)),
-  setCurrentTheme: theme => dispatch(setCurrentTheme(theme)),
-  getCurrentTheme: () => dispatch(getCurrentTheme()),
-  getThemeForm: () => dispatch(getThemeForm()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SassJsComponent);
