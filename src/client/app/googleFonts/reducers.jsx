@@ -4,22 +4,22 @@ const LOAD_GOOGLE_FONTS = 'LOAD_GOOGLE_FONTS';
 const LOAD_GOOGLE_FONTS_SUCCESS = 'LOAD_GOOGLE_FONTS_SUCCESS';
 const LOAD_GOOGLE_FONTS_ERROR = 'LOAD_GOOGLE_FONTS_ERROR';
 
-export const googleFontsReducer = (state = { fonts: [], loading: false }, action) => {
+export const googleFontsReducer = (state = { fonts: [], pending: false }, action) => {
   switch (action.type) {
     case LOAD_GOOGLE_FONTS:
       return {
         ...state,
-        loading: true,
+        pending: true,
       };
     case LOAD_GOOGLE_FONTS_SUCCESS:
       return {
         fonts: action.payload,
-        loading: false,
+        pending: false,
       };
     case LOAD_GOOGLE_FONTS_ERROR:
       return {
         ...state,
-        loading: false,
+        pending: false,
       };
     default:
       return state;
